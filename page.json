@@ -1,0 +1,34 @@
+{
+	"null": {
+		"author": "佚名",
+		"time": "",
+		"title": "空位",
+		"subtitle": "",
+		"text": "这里是文章空位，您可以发微博来占领这个空位",
+		"id": "null"
+	},
+	"2b0cd722": {
+		"time": "2021-11-13 18:42:43",
+		"author": "Sbaoor",
+		"title": "第一篇微博",
+		"subtitle": "测试",
+		"text": "这是由BDS发向MCWeibo的第一篇微博",
+		"id": "2b0cd722"
+	},
+	"627ee662": {
+		"time": "2021-11-13 18:44:36",
+		"author": "Lition",
+		"title": "第二篇微博",
+		"subtitle": "测试",
+		"text": "这是由BDS发向MCWeibo的第二篇微博",
+		"id": "627ee662"
+	},
+	"17ae1629": {
+		"time": "2021-11-13 18:51:02",
+		"author": "dofes",
+		"title": "第n篇微博",
+		"subtitle": "嘿,这里是dofes",
+		"text": "这是由BDS发向MCWeibo的第不知道第几篇微博<br>这里是dofes",
+		"id": "17ae1629"
+	}
+}
