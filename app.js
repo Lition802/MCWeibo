@@ -4,7 +4,7 @@ const url = require('url');
 const fs = require('fs');
 const cookie = require('cookie-parser');
 var bodyParser = require('body-parser');/*post方法*/
-
+const UserHelper = require('./Utils/Users');
 const PageHelper = require('./Utils/Page');
 const { mainModule } = require('process');
 var ids = PageHelper.getAllID();
@@ -19,6 +19,7 @@ app.engine('html', require('ejs').__express);
  
 //注意express.static这个中间件是express内置的
 app.use(express.static(path.join(__dirname, 'views')));
+
 
 
 function count_null(t){
@@ -38,16 +39,20 @@ app.get('/', function (req, res) {
     var tg = [PageHelper.getEssay(ids[pge*3-3]),PageHelper.getEssay(ids[pge*3-2]),PageHelper.getEssay(ids[pge*3-1])]
     var tgs = [];
     var count = count_null(tg);
+    var dao = false;
     while(count>0){
         tgs.push(PageHelper.pure);
         count--;
+        dao = true;
     }
+    if(dao) tg = tg.reverse();
     for(i in tg){
         if(tg[i].id != 'null')
             tgs.push(tg[i]);
     }
     var holder = {}
-    for(var ii in tgs.reverse()){
+    if(dao) tgs = tgs.reverse();
+    for(var ii in tgs){
         var path = 'steve'
         try{
             fs.statSync('./views/images/user/'+tgs[ii].author+".jpg")
@@ -67,6 +72,7 @@ app.get('/', function (req, res) {
     holder['pervious_page'] =(pge-2<0)?1:pge-1
     //console.log(holder);
     res.render('main',holder);
+    res.end();
 });
 
 
@@ -96,19 +102,50 @@ app.get('/about',(req,res)=>{
 
 app.post("/api/publish/",(req,res)=>{
     body = req.body;
-    if(body.key == undefined){ res.json({code:401}); return;}
+    if(body.key != public_key){ res.json({code:401});res.end(); return;}
+    if(PageHelper.AlreadyPublish(req.body.name) ){ res.json({code:407});res.end(); return;}
     PageHelper.addPage(body.title,body.subtitle,body.text,body.author);
     res.json({code:200});
+    res.end();
 });
-app.post('/api/submit/',(req,res)=>{
+app.post('/api/reg/',(req,res)=>{
     console.log(req.body);
+    var ret = {};
+    if(req.body.key != public_key){
+        res.json({code:401});
+        res.end();
+        return;
+    }
+    if(UserHelper.exsits(req.body.xuid)){
+        ret.code = 507;
+    }else{
+        UserHelper.add(req.body.xuid,req.body.name,req.body.pwd);
+        ret.code = 200;
+    }
+    res.json(ret);
+    res.end();
+});
+
+app.post('/api/login/',(req,res)=>{
+    console.log(req.body);
+    var ret = {};
+    if(req.body.key != public_key){
+        res.json({code:401});
+        res.end();
+        return;
+    }
+    if(UserHelper.pwd_right(req.body.xuid,req.body.pwd)){
+        ret.code = 200;
+    }else{
+        ret.code = 404;
+    }
+    res.json(ret);
     res.end();
 });
 
 app.get('/api/page/',(req,res)=>{
     var ul =url.parse(req.url,true);
     console.log(ul);
-    if(ul.query.key == undefined){ res.json({code:401}); res.end();return;}
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
     var pge = (ul.query.page == undefined)?1:Number(ul.query.page);
     if(pge<=0){ res.json({code:404}); return;}
@@ -120,6 +157,19 @@ app.get('/api/page/',(req,res)=>{
             tgs.push(tg[i]);
     }
     res.json(tgs.reverse());
+    res.end();
+});
+
+app.get('/api/page/all',(req,res)=>{
+    var ul =url.parse(req.url,true);
+    console.log(ul);
+    if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
+    var re = [];
+    ids.forEach(id=>{
+        re.push(PageHelper.getEssay(id));
+    });
+    res.json(re);
+    res.end();
 });
 
 app.get('/api/essay/',(req,res)=>{
@@ -131,8 +181,8 @@ app.get('/api/essay/',(req,res)=>{
 });
 
 
-app.listen(3391);
+app.listen(3390);
 
 setInterval(()=>{
-    ids = PageHelper.getAllID();
+    ids = PageHelper.getAllID().reverse();
 },5000);

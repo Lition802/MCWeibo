@@ -67,3 +67,13 @@ exports.getEssay = function (id){
     if(id == undefined) return pure;
     return (pagedata[id] == undefined)?pure:pagedata[id];
 }
+
+exports.AlreadyPublish = function(name){
+    var dt = new Date().Format("yyyy-MM-dd hh:mm:ss");
+    var rt = false;
+    pagedata.forEach(element => {
+        if(pagedata[element].time = dt  &&pagedata[element].author == name) rt = true;
+        
+    });
+    return rt;
+}
