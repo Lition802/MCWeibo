@@ -37,7 +37,8 @@ exports.addPage=function (title,subtitle,text,author){
             title,
             subtitle,
             text,
-            id
+            id,
+            reply:[]
         };
     }
     fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
@@ -68,12 +69,28 @@ exports.getEssay = function (id){
     return (pagedata[id] == undefined)?pure:pagedata[id];
 }
 
-exports.AlreadyPublish = function(name){
-    var dt = new Date().Format("yyyy-MM-dd hh:mm:ss");
-    var rt = false;
-    pagedata.forEach(element => {
-        if(pagedata[element].time = dt  &&pagedata[element].author == name) rt = true;
-        
-    });
-    return rt;
+exports.getToday = function(){
+    return new Date().Format('yyyy-MM-dd');
+}
+
+exports.addReply = function(id,name,text){
+    pagedata[id].reply.push({ time: new Date().Format("yyyy-MM-dd hh:mm:ss"),author:name,text});
+    fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
+}
+
+exports.delPage = function(id){
+    delete pagedata[id];
+    fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
+}
+
+exports.getReply = function(i){
+    /*
+    <h3>Text</h3><br><p>This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
+    */
+   var t = '<hr>';
+   pagedata[i].reply.forEach(e => {
+       t+=`<h5>${e.author}：${e.text}</h5>`//<p>${e.time}</p>`
+       //t+=`<p>${e.author}<i>      ${e.time}</i></p><p>${e.text}</p>`
+   });
+   return t;
 }
