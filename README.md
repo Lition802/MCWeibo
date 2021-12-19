@@ -7,10 +7,12 @@ MCWeibo是一个在线的微博平台，后端基于Nodejs搭建
 
 # api
 
+## 发布文章
+
 ```
 [POST] /api/publish/
 ```
-用于发布文章
+
 
 POST数据示例
 ``` json
@@ -23,21 +25,43 @@ POST数据示例
 }
 ```
 
+## 通过页码获取页面内容
+
 ```
 [GET] /api/page/?page={page}&key={key}
 ```
-用于通过页码获取页面内容
+
+
+
+## 获取所有文章
 
 ```
 [GET] /api/page/all?key={key}
 ```
-获取所有文章
+
+## 评论贴子
+
+```
+[POST] /api/reply
+```
+
+POST数据示例
+``` json
+{
+	"key":"{key}",
+	"text":"评论内容",
+	"id":"贴子id",
+	"name":"评论玩家昵称"
+}
+```
+
+## 登录
 
 ```
 [POST] /api/login
 ```
-用于登录
 
+POST数据示例
 ``` json
 {
 	"key":"{key}",
@@ -46,12 +70,13 @@ POST数据示例
 }
 ```
 
+## 注册
+
 ```
 [POST] /api/reg
 ```
 
-用于注册
-
+POST数据示例
 ``` json
 {
 	"key":"{key}",
@@ -62,15 +87,18 @@ POST数据示例
 
 ```
 
+## 根据id删除文章
+
 ```
 [GET] /api/del?key={key}&id={id}
 ```
-根据id删除文章，注意不可逆
+注意不可逆
+
+## 通过id获取具体文章
 
 ```
 [GET] /api/essay/?id={id}&key={key}
 ```
-用于通过id获取具体文章
 
 
 

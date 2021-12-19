@@ -59,7 +59,8 @@ var pure = {
     text:"这里是文章空位，您可以发微博来占领这个空位",
     time:"",
     author:"佚名",
-    id:"null"
+    id:"null",
+    reply:[]
 }
 
 exports.pure = pure;
@@ -89,10 +90,14 @@ exports.getReply = function(i){
     /*
     <h3>Text</h3><br><p>This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
     */
+
    var t = '<hr>';
-   pagedata[i].reply.forEach(e => {
-       t+=`<h5>${e.author}：${e.text}</h5>`//<p>${e.time}</p>`
-       //t+=`<p>${e.author}<i>      ${e.time}</i></p><p>${e.text}</p>`
-   });
+   try{
+    pagedata[i].reply.forEach(e => {
+        t+=`<h5>${e.author}：${e.text}</h5>`//<p>${e.time}</p>`
+        //t+=`<p>${e.author}<i>      ${e.time}</i></p><p>${e.text}</p>`
+    });
+   }catch{}
+
    return t;
 }
