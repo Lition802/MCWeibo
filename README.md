@@ -119,4 +119,9 @@ POST数据示例
 [GET] /api/essay/?id={id}&key={key}
 ```
 
+## 通过用户名获取用户信息
+
+```
+[GET] /api/user/?key={key}?user={name}
+```
 

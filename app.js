@@ -146,16 +146,19 @@ app.get('/api/user/',(req,res)=>{
     var ul =url.parse(req.url,true);
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
     if(UserHelper.getXUID(ul.query.user)==undefined){res.json({code:404}); res.end();return;}
-    var name = ul.query.user;
+    var name = ul.query.user.replaceAll('%20',' ');
     var rt = [];
     var rt2 = [];
     PageHelper.getAllID().forEach(id=>{
         var page = PageHelper.getEssay(id);
         if(page.author == name)
             rt.push(id);
-        
+        page.reply.forEach(re=>{
+            if(re.author == name)
+                rt2.push({essayid: id,replyid:re.id});
+        });
     });
-    res.json({code:200,essays:rt});
+    res.json({code:200,essays:rt,reply:rt2});
     res.end();
 });
 
