@@ -122,6 +122,6 @@ POST数据示例
 ## 通过用户名获取用户信息
 
 ```
-[GET] /api/user/?key={key}?user={name}
+[GET] /api/user/?key={key}&user={name}
 ```
 
