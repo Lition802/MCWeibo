@@ -116,7 +116,7 @@ app.post("/api/publish/",(req,res)=>{
         res.end();
         return;
     }
-    PageHelper.addPage(body.title,body.subtitle,body.text.replace('\\n','<br>'),body.author);
+    PageHelper.addPage(body.title,body.subtitle,body.text.replaceAll('\\n','<br>'),body.author);
     res.json({code:200});
     res.end();
 });
@@ -203,7 +203,6 @@ app.get('/api/page/all',(req,res)=>{
 
 app.post('/api/reply',(req,res)=>{
     body = req.body;
-    
     if(body.key != public_key){ res.json({code:401});res.end(); return;}
     if(body.text.trim() == ''){
         res.json({code:400});

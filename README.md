@@ -62,6 +62,10 @@ POST数据示例
 
 ```
 
+```
+[GET] /api/del?key={key}&id={id}
+```
+根据id删除文章，注意不可逆
 
 ```
 [GET] /api/essay/?id={id}&key={key}
