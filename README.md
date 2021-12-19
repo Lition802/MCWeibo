@@ -29,9 +29,46 @@ POST数据示例
 用于通过页码获取页面内容
 
 ```
+[GET] /api/page/all?key={key}
+```
+获取所有文章
+
+```
+[POST] /api/login
+```
+用于登录
+
+``` json
+{
+	"key":"{key}",
+	"xuid":"玩家xuid",
+	"pwd":"登录密码"
+}
+```
+
+```
+[POST] /api/reg
+```
+
+用于注册
+
+``` json
+{
+	"key":"{key}",
+	"name":"玩家昵称",
+	"pwd":"密码MD5值",
+	"xuid":"玩家xuid"
+}
+
+```
+
+
+```
 [GET] /api/essay/?id={id}&key={key}
 ```
 用于通过id获取具体文章
+
+
 
 |HTTP状态码|含义|
 |:-:|:-:|

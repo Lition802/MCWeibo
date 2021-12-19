@@ -19,8 +19,8 @@ app.engine('html', require('ejs').__express);
 var publish = JSON.parse(fs.readFileSync('publish.json','utf-8'));
 //注意express.static这个中间件是express内置的
 app.use(express.static(path.join(__dirname, 'views')));
-
-
+const loginhelper = require('./Utils/Daylogin');
+const usertitle = ['新秀','少侠','大侠','掌门','宗师','盟主'];//董事、经理、助理、转正、试用、实习
 
 function count_null(t){
     var i = 0;
@@ -130,6 +130,7 @@ app.post('/api/reg/',(req,res)=>{
     }
     if(UserHelper.exsits(req.body.xuid)){
         ret.code = 507;
+
     }else{
         UserHelper.add(req.body.xuid,req.body.name,req.body.pwd);
         ret.code = 200;
@@ -139,7 +140,6 @@ app.post('/api/reg/',(req,res)=>{
 });
 
 app.post('/api/login/',(req,res)=>{
-    console.log(req.body.xuid,'登录');
     var ret = {};
     if(req.body.key != public_key){
         res.json({code:401});
@@ -153,6 +153,18 @@ app.post('/api/login/',(req,res)=>{
     }
     if(UserHelper.pwd_right(req.body.xuid,req.body.pwd)){
         ret.code = 200;
+        ret.msg = '登录成功！\n'
+        console.log(req.body.xuid,'登录');
+        var lgdt = loginhelper.daylog(req.body.xuid);
+        if(lgdt.isfirst){
+            ret.msg += '这是你今天第一次登录，经验+5！';
+            ret.msg+='\n你现在拥有经验：'+UserHelper.addxp(req.body.xuid,5);
+        }else{
+            ret.msg+='这是你今天第'+lgdt.time+'次登录！';
+            ret.msg+='\n你现在拥有经验：'+UserHelper.getxp(req.body.xuid);
+        }
+        
+        ret.msg += '\n当前用户组：'+usertitle[UserHelper.getLevel(req.body.xuid)];
     }else{
         ret.code = 404;
     }
@@ -180,20 +192,26 @@ app.get('/api/page/',(req,res)=>{
 app.get('/api/page/all',(req,res)=>{
     var ul =url.parse(req.url,true);
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
-    var re = [];
+    let re = [];
     ids.forEach(id=>{
         re.push(PageHelper.getEssay(id));
     });
+    console.log('获取列表');
     res.json(re);
     res.end();
 });
 
 app.post('/api/reply',(req,res)=>{
     body = req.body;
-    console.log(body);
+    
     if(body.key != public_key){ res.json({code:401});res.end(); return;}
-
+    if(body.text.trim() == ''){
+        res.json({code:400});
+        res.end();
+        return;
+    }
     PageHelper.addReply(body.id,body.name,body.text);
+    console.log(body.name+' 回复贴子 >> '+body.text);
     res.json({code:200});
     res.end();
 });
@@ -212,12 +230,19 @@ app.get('/api/del',(req,res)=>{
 
 app.get('/api/essay/',(req,res)=>{
     var ul =url.parse(req.url,true);
-    if(ul.query.key == undefined){ res.json({code:401}); res.end();return;}
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
     var id = (ul.query.id == undefined)?'null':ul.query.id;
     res.json(PageHelper.getEssay(id));
 });
 
+function parseEssay(id){
+    var pg = Object.assign({},PageHelper.getEssay(id));
+    pg.author ='['+usertitle[UserHelper.nameTolevel(pg.author)]+']'+pg.author;
+    for(var i in pg.reply){
+        pg.reply[i].author = '['+usertitle[UserHelper.nameTolevel(pg.reply[i].author)]+']'+pg.reply[i].author;
+    }
+    return pg;
+}
 
 app.listen(3390);
 
@@ -226,3 +251,17 @@ setInterval(()=>{
 },5000);
 
 console.log(PageHelper.getToday())
+
+const readline = require('readline');
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+})
+//控制台stop退出
+rl.on('line',(input)=>{
+	switch(input){
+		case "stop":
+			process.exit(0);
+			break;
+	}
+});

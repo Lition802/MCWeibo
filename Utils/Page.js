@@ -66,7 +66,9 @@ exports.pure = pure;
 
 exports.getEssay = function (id){
     if(id == undefined) return pure;
-    return (pagedata[id] == undefined)?pure:pagedata[id];
+    if(pagedata[id] == undefined) return pure;
+    var p = pagedata[id];
+    return p;
 }
 
 exports.getToday = function(){
@@ -74,7 +76,7 @@ exports.getToday = function(){
 }
 
 exports.addReply = function(id,name,text){
-    pagedata[id].reply.push({ time: new Date().Format("yyyy-MM-dd hh:mm:ss"),author:name,text});
+    pagedata[id].reply.push({ time: new Date().Format("yyyy-MM-dd hh:mm:ss"),author:name,text,id:guid()});
     fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
 }
 
