@@ -116,6 +116,7 @@ app.post("/api/publish/",(req,res)=>{
         res.end();
         return;
     }
+    if(UserHelper.getXUID(body.author)==undefined) return;
     PageHelper.addPage(body.title,body.subtitle,body.text.replaceAll('\\n','<br>'),body.author);
     res.json({code:200});
     res.end();
@@ -136,6 +137,25 @@ app.post('/api/reg/',(req,res)=>{
         ret.code = 200;
     }
     res.json(ret);
+    res.end();
+});
+
+
+
+app.get('/api/user/',(req,res)=>{
+    var ul =url.parse(req.url,true);
+    if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
+    if(UserHelper.getXUID(ul.query.user)==undefined){res.json({code:404}); res.end();return;}
+    var name = ul.query.user;
+    var rt = [];
+    var rt2 = [];
+    PageHelper.getAllID().forEach(id=>{
+        var page = PageHelper.getEssay(id);
+        if(page.author == name)
+            rt.push(id);
+        
+    });
+    res.json({code:200,essays:rt});
     res.end();
 });
 
@@ -215,7 +235,19 @@ app.post('/api/reply',(req,res)=>{
     res.end();
 });
 
-app.get('/api/del',(req,res)=>{
+app.get('/api/del/reply/',(req,res)=>{
+    var ul =url.parse(req.url,true);
+    if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
+    try{
+        PageHelper.delReply(ul.query.essayid,ul.query.replyid);
+    }catch(err){
+        console.log(err);
+    }
+    res.json({code:200});
+    res.end();
+});
+
+app.get('/api/del/essay/',(req,res)=>{
     var ul =url.parse(req.url,true);
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
     try{

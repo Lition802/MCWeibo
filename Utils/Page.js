@@ -81,6 +81,14 @@ exports.addReply = function(id,name,text){
     fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
 }
 
+exports.delReply = function(essayid,replyid){
+    for(var i in pagedata[essayid].reply){
+        if(pagedata[essayid].reply[i].id == replyid)
+            pagedata[essayid].reply.splice(i,1);
+    }
+    fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
+}
+
 exports.delPage = function(id){
     delete pagedata[id];
     fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
