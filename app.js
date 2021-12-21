@@ -158,7 +158,7 @@ app.get('/api/user/',(req,res)=>{
                 rt2.push({essayid: id,replyid:re.id});
         });
     });
-    res.json({code:200,essays:rt,reply:rt2});
+    res.json({code:200,permission:usertitle[UserHelper.getLevel(UserHelper.getXUID(name))],xp:UserHelper.getxp(UserHelper.getXUID(name)),level:UserHelper.getLevel(UserHelper.getXUID(name)),essays:rt,reply:rt2});
     res.end();
 });
 
