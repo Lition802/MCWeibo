@@ -32,6 +32,7 @@ function count_null(t){
 }
 
 app.get('/', function (req, res) {
+    console.log(req.ip);
     var ul =url.parse(req.url,true);
     var pge = (ul.query.page == undefined)?1:Number(ul.query.page);
     if(pge<0) res.redirect("./?page=1");
@@ -78,6 +79,7 @@ app.get('/', function (req, res) {
 
 
 app.get('/single',(req,res,next)=>{
+    console.log(req.ip,req.url);
     var ul =url.parse(req.url,true)
     id = ul.query.id;
     if(id==undefined){res.redirect('../');}
@@ -104,6 +106,7 @@ app.get('/about',(req,res)=>{
 });
 
 app.post("/api/publish/",(req,res)=>{
+    console.log(req.ip,req.url);
     body = req.body;
     if(body.key != public_key){ res.json({code:401});res.end(); return;}
     if(publish[PageHelper.getToday()] == undefined) publish[PageHelper.getToday()]  = [];
@@ -122,6 +125,7 @@ app.post("/api/publish/",(req,res)=>{
     res.end();
 });
 app.post('/api/reg/',(req,res)=>{
+    console.log(req.ip,req.url);
     console.log(req.body);
     var ret = {};
     if(req.body.key != public_key){
@@ -143,6 +147,7 @@ app.post('/api/reg/',(req,res)=>{
 
 
 app.get('/api/user/',(req,res)=>{
+    console.log("查询玩家信息",req.url);
     var ul =url.parse(req.url,true);
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
     if(UserHelper.getXUID(ul.query.user)==undefined){res.json({code:404}); res.end();return;}
@@ -196,6 +201,7 @@ app.post('/api/login/',(req,res)=>{
 });
 
 app.get('/api/page/',(req,res)=>{
+    console.log(req.ip,req.url);
     var ul =url.parse(req.url,true);
     console.log(ul);
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
@@ -239,6 +245,7 @@ app.post('/api/reply',(req,res)=>{
 });
 
 app.get('/api/del/reply/',(req,res)=>{
+    console.log(req.ip,req.url);
     var ul =url.parse(req.url,true);
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
     try{
@@ -251,6 +258,7 @@ app.get('/api/del/reply/',(req,res)=>{
 });
 
 app.get('/api/del/essay/',(req,res)=>{
+    console.log(req.ip,req.url);
     var ul =url.parse(req.url,true);
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
     try{
@@ -263,6 +271,7 @@ app.get('/api/del/essay/',(req,res)=>{
 });
 
 app.get('/api/essay/',(req,res)=>{
+    console.log(req.ip,req.url);
     var ul =url.parse(req.url,true);
     if(ul.query.key != public_key) {res.json({code:401}); res.end();return;}
     var id = (ul.query.id == undefined)?'null':ul.query.id;
