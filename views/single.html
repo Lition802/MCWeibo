@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<!--
+	Future Imperfect by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title><%- title%></title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+	<body class="single is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="/">MCWeibo</a></h1>
+						<nav class="links">
+							<ul>
+								<li><a href="/">首页</a></li>
+								<li><a href="/water">灌水闲聊</a></li>
+								<li><a href="/news">新闻资讯</a></li>
+								<li><a href="/notice">微博公告</a></li>
+								<li><a href="/about">关于我们</a></li>
+							</ul>
+						</nav>
+						<nav class="main">
+							<ul>
+								<li class="search">
+									<a class="fa-search" href="#search">搜索</a>
+									<form id="search" method="get" action="#">
+										<input type="text" name="query" placeholder="Search" />
+									</form>
+								</li>
+								<li class="menu">
+									<a class="fa-bars" href="#menu">菜单</a>
+								</li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<section id="menu">
+
+						<!-- Search -->
+							<section>
+								<form class="search" method="get" action="#">
+									<input type="text" name="query" placeholder="Search" />
+								</form>
+							</section>
+
+						<!-- Links -->
+						<section>
+							<ul class="links">
+								<li>
+									<a href="/water">
+										<h3>灌水闲聊</h3>
+										<p>我有故事和酒，你有满汉全席吗</p>
+									</a>
+								</li>
+								<li>
+									<a href="/news">
+										<h3>新闻资讯</h3>
+										<p>获取minecraft的最新消息</p>
+									</a>
+								</li>
+								<li>
+									<a href="/notice">
+										<h3>微博公告</h3>
+										<p>卖报啦卖报啦！三块钱一份，十块钱三份~</p>
+									</a>
+								</li>
+								<li>
+									<a href="/about">
+										<h3>关于我们</h3>
+										<p>看看项目组</p>
+									</a>
+								</li>
+							</ul>
+						</section>
+
+						<!-- Actions -->
+						<section>
+							<ul class="actions stacked">
+								<li><a href="/login" class="button large fit">Log In</a></li>
+							</ul>
+						</section>
+
+					</section>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<article class="post">
+								<header>
+									<div class="title">
+										<h2><a href="#"><%- title%></a></h2>
+										<p><%- sub_title%></p>
+									</div>
+									<div class="meta">
+										<time class="published" datetime="<%- datetime%>"><%- datetime%></time>
+										<a href="#" class="author"><span class="name"><%- author%></span><img src="images/users/<%- avatar%>.jpg" alt="" /></a>
+									</div>
+								</header>
+								<p><%- text%></p>
+								<footer>
+									<ul class="stats">
+										<li><a href="#" class="icon solid fa-comment"><%- reply_count%></a></li>
+									</ul>
+								</footer>
+								<section>
+									<h4>版权声明</h4>
+									<blockquote> 本站所有文章除特别声明外，均采用<a href="https://creativecommons.org/licenses/by/4.0/deed.zh"> CC BY 4.0 CN协议 </a>许可协议。转载请注明出处！</blockquote>
+									
+										<h3>评论</h3>
+										<div class="row">
+											<div class="col-6 col-12-medium">
+												<ul class="alt">
+													<%-reply%>
+												</ul>
+											</div>
+								</section>
+								<section>
+									<h3>评论..</h3>
+									<form method="post" action="/client/reply?id=<%- id%>">
+										<div class="row gtr-uniform">
+											<div class="col-12">
+												<textarea name="text" id="demo-message" placeholder="Enter your message" rows="6"></textarea>
+											</div>
+											<div class="col-12">
+												<ul class="actions">
+													<li><input type="submit" value="回复"/></li>
+													<li><input type="reset" value="清空" /></li>
+												</ul>
+											</div>
+										</div>
+									</form>
+									
+								</section>
+							</article>
+
+					</div>
+
+				<!-- Footer -->
+				<section id="footer">
+					<p class="copyright">&copy; 2022 MCWeibo</p>
+				</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

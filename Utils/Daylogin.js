@@ -1,8 +1,8 @@
-const phelper = require('./Page');
 const fs = require('fs');
-var daylogin = JSON.parse(fs.readFileSync("daylogin.json"));
+var daylogin = JSON.parse(fs.readFileSync("Data/daylogin.json"));
+var sd = require('silly-datetime');
 exports.daylog = function(xuid){
-    const td = phelper.getToday();
+    const td = sd.format(new Date(),'YYYY-MM-DD');
     if(daylogin[td] == undefined){
         daylogin[td] = {}
     }
@@ -12,8 +12,9 @@ exports.daylog = function(xuid){
         return {isfirst:true};
     }
     daylogin[td][xuid]+=1;
+    save();
     return {isfirst:false,time:daylogin[td][xuid]};
 }
 function save(){
-    fs.writeFileSync('./daylogin.json',JSON.stringify(daylogin,null,"\t"));
+    fs.writeFileSync('Data/daylogin.json',JSON.stringify(daylogin,null,"\t"));
 }

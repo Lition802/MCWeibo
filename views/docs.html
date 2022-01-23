@@ -1,0 +1,429 @@
+<html>
+
+<head>
+    <title>MCWeiBo API</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body class="single is-preload">
+    <div id="wrapper">
+        <article class="post">
+            <header>
+                <div class="title">
+                    <h2><a href="#">MCWeibo API 文档</a></h2>
+                    <p>感谢使用 MCWeiBo</p>
+                </div>
+                <div class="meta">
+                    <time class="published" datetime="2022-1-2">一月 2, 2022</time>
+                    <a href="#" class="author"><span class="name">MCWeibo</span><img src="images/logo.jpg" alt="" /></a>
+                </div>
+            </header>
+            <footer>
+                <ul class="stats">
+                    <li><a href="#" class="icon solid fa-comment">68</a></li>
+                </ul>
+            </footer>
+
+            <section>
+                <h3>注册</h3>
+                <pre><code>[POST] /api/reg</code></pre>
+                <pre><code>{
+    "pwd":"password",
+    "xuid":"player's xuid",
+    "name":"player's name",
+    "public_key":"api_key"     
+}</code></pre>
+            </section>
+            <section>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>pwd</td>
+                                <td>密码MD5</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>public_key</td>
+                                <td>微博API公匙</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>xuid</td>
+                                <td>玩家xuid</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>name</td>
+                                <td>玩家昵称</td>
+                                <td>string</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h3>登录</h3>
+                <pre><code>[POST] /api/login</code></pre>
+                <p>登录成功后api会返回私匙，连接websocket以激活</p>
+                <pre><code>{
+    "pwd":"password",
+    "xuid":"player's xuid",
+    "public_key":"api_key"     
+}</code></pre>
+            </section>
+            <section>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>pwd</td>
+                                <td>密码MD5</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>public_key</td>
+                                <td>微博API公匙</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>xuid</td>
+                                <td>玩家xuid</td>
+                                <td>string</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h3>激活私匙</h3>
+                <pre><code>[websocket] /online?xuid={xuid}&key={key}</code></pre>
+                <p>websocket断开后，私匙立即作废</p>
+                <section>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Key</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tr>
+                                <td>xuid</td>
+                                <td>玩家xuid</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>key</td>
+                                <td>用户私匙</td>
+                                <td>string</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </section>
+            <section>
+                <h5>发布文章</h5>
+                <pre><code>[POST] /api/publish</code></pre>
+                <pre><code>{
+    "title":"title",
+    "sub_title":"sub title",
+    "xuid":"player's xuid",
+    "text":"something..",
+    "type":0,
+    "private_key":"user_key",
+    "public_key":"api_key"     
+}</code></pre>
+            </section>
+            <section>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>title</td>
+                                <td>文章标题</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>type</td>
+                                <td>文章分类</td>
+                                <td>int</td>
+                            </tr>
+                            <tr>
+                                <td>sub_title</td>
+                                <td>副标题</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>text</td>
+                                <td>文章正文</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>public_key</td>
+                                <td>微博API公匙</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>private_key</td>
+                                <td>用户私匙</td>
+                                <td>string</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h3>获取页面</h3>
+                <pre><code>[GET] /api/page?page={page}&type={type}&key={key}</code></pre>
+                <pre><code>{
+    "code": 200, 
+    "essays": [
+        {
+            "title": "第三篇测试", 
+            "sub_title": "副标题", 
+            "author": "DreamLition", 
+            "reply": 0, 
+             "id": "3f709d1f"
+         }, 
+         {
+            "title": "标题", 
+            "sub_title": "副标题", 
+            "author": "DreamLition", 
+            "reply": 0, 
+            "id": "0c998333"
+        }, 
+        {
+            "title": "村上春树", 
+            "sub_title": "副标题", 
+            "author": "DreamLition", 
+            "reply": 0, 
+            "id": "0c998c64"
+        }
+    ]
+}</code></pre>
+            </section>
+            <section>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>page</td>
+                                <td>页码</td>
+                                <td>int</td>
+                            </tr>
+                            <tr>
+                                <td>type</td>
+                                <td>文章分类</td>
+                                <td>int</td>
+                            </tr>
+                            <tr>
+                                <td>key</td>
+                                <td>微博API公匙</td>
+                                <td>string</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h3>获取文章</h3>
+                <pre><code>[GET] /api/single?key={public_key}&id={id}</code></pre>
+                <pre><code>{
+            "code": 200,
+            "single": {
+            "title": "第三篇测试",
+            "sub_title": "副标题",
+            "author": "DreamLition",
+            "datetime": "2022-01-01 10:56:34",
+            "text": "内容",
+            "reply": [
+            {
+              "text": "233",
+              "author": "gqf0902",
+              "datetime": "2022-01-02 17:28:16"
+            }
+        ]
+    }
+}</code></pre>
+            </section>
+            <section>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>id</td>
+                                <td>文章id</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>key</td>
+                                <td>微博API公匙</td>
+                                <td>string</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h3>获取页面</h3>
+                <pre><code>[GET] /api/page?page={page}&type={type}&key={key}</code></pre>
+                <pre><code>{
+    "code": 200, 
+    "essays": [
+        {
+            "title": "第三篇测试", 
+            "sub_title": "副标题", 
+            "author": "DreamLition", 
+            "reply": 0, 
+             "id": "3f709d1f"
+         }, 
+         {
+            "title": "标题", 
+            "sub_title": "副标题", 
+            "author": "DreamLition", 
+            "reply": 0, 
+            "id": "0c998333"
+        }, 
+        {
+            "title": "村上春树", 
+            "sub_title": "副标题", 
+            "author": "DreamLition", 
+            "reply": 0, 
+            "id": "0c998c64"
+        }
+    ]
+}</code></pre>
+            </section>
+            <section>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>page</td>
+                                <td>页码</td>
+                                <td>int</td>
+                            </tr>
+                            <tr>
+                                <td>type</td>
+                                <td>文章分类</td>
+                                <td>int</td>
+                            </tr>
+                            <tr>
+                                <td>key</td>
+                                <td>微博API公匙</td>
+                                <td>string</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <section>
+                <h3>回复文章</h3>
+                <pre><code>[POST] /api/reply</code></pre>
+                <pre><code>{
+    "essay_id": "essay's id",
+    "text": "raw_text",
+    "xuid": "user's xuid",
+    "public_key": "api_key",
+    "private_key": "user_key"
+}</code></pre>
+            </section>
+            <section>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Key</th>
+                                <th>Description</th>
+                                <th>Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>essay_id</td>
+                                <td>文章id</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>text</td>
+                                <td>评论内容</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>xuid</td>
+                                <td>用户xuid</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>public_key</td>
+                                <td>微博API公匙</td>
+                                <td>string</td>
+                            </tr>
+                            <tr>
+                                <td>private_key</td>
+                                <td>用户私匙</td>
+                                <td>string</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </article>
+    </div>
+    <!-- Scripts -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+</body>
+
+</html>

@@ -1,9 +1,13 @@
 {
   "dependencies": {
+    "axios": "^0.24.0",
     "cookie-parser": "^1.4.5",
     "ejs": "^3.1.6",
     "express": "^4.17.1",
     "express-parser": "^1.0.0",
-    "querystring": "^0.2.1"
+    "express-ws": "^5.0.2",
+    "md5-node": "^1.0.1",
+    "querystring": "^0.2.1",
+    "silly-datetime": "^0.1.2"
   }
 }

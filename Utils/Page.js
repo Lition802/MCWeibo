@@ -1,24 +1,10 @@
+
 const fs = require('fs');
+var sd = require('silly-datetime');
 
-var pagedata = JSON.parse(fs.readFileSync("page.json"));
+var pagedata = JSON.parse(fs.readFileSync("Data/page.json",'utf-8'));
 
-
-Date.prototype.Format = function (fmt) { // author: meizz
-    var o = {
-      "M+": this.getMonth() + 1, // 月份
-      "d+": this.getDate(), // 日
-      "h+": this.getHours(), // 小时
-      "m+": this.getMinutes(), // 分
-      "s+": this.getSeconds(), // 秒
-      "q+": Math.floor((this.getMonth() + 3) / 3), // 季度
-      "S": this.getMilliseconds() // 毫秒
-    };
-    if (/(y+)/.test(fmt))
-      fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    for (var k in o)
-      if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-        return fmt;
-}
+var IDSwithTIME = JSON.parse(fs.readFileSync("Dataids_time.json"));
 
 function guid() {
     return 'xxxxxxxx'.replace(/[xy]/g, function (c) {
@@ -28,84 +14,203 @@ function guid() {
     });
 }
 
-exports.addPage=function (title,subtitle,text,author){
-    var id = guid();
-    if(pagedata[id]==undefined){
-        pagedata[id]={
-            time: new Date().Format("yyyy-MM-dd hh:mm:ss"),
-            author,
-            title,
-            subtitle,
-            text,
-            id,
-            reply:[]
-        };
-    }
-    fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
-}
-
-exports.getAllID = function(){
-    var ids = [];
-    for(i in pagedata){
-        if(pagedata[i].id != 'null')
-            ids.push(i);
-    }
-    return ids;
-}
-
-var pure = {
-    title:"空位",
-    subtitle:"",
-    text:"这里是文章空位，您可以发微博来占领这个空位",
-    time:"",
-    author:"佚名",
-    id:"null",
-    reply:[]
-}
-
-exports.pure = pure;
-
-exports.getEssay = function (id){
-    if(id == undefined) return pure;
-    if(pagedata[id] == undefined) return pure;
-    var p = pagedata[id];
-    return p;
-}
-
 exports.getToday = function(){
-    return new Date().Format('yyyy-MM-dd');
+    return sd.format(new Date(),'yyyy-MM-dd');
 }
 
-exports.addReply = function(id,name,text){
-    pagedata[id].reply.push({ time: new Date().Format("yyyy-MM-dd hh:mm:ss"),author:name,text,id:guid()});
-    fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
+function save(){
+    fs.writeFileSync('./Data/Page.json',JSON.stringify(pagedata,null,"\t"));
+    fs.writeFileSync('./Dataids_time.json',JSON.stringify(IDSwithTIME,null,"\t"));
 }
 
-exports.delReply = function(essayid,replyid){
-    for(var i in pagedata[essayid].reply){
-        if(pagedata[essayid].reply[i].id == replyid)
-            pagedata[essayid].reply.splice(i,1);
+function remove(arr,dt){
+    arr.splice(arr.indexOf(dt),1);
+}
+
+function generateHTML(id){
+    var tmp = pagedata[id];
+    if(tmp==undefined){
+        return "";
     }
-    fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
+    if(tmp.id=="null"){
+        return "";
+    }
+    var name = WEIBO.USERS.XUID2NAME(tmp.xuid);
+    var avatar = "steve";
+    try{
+        fs.statSync("./views/images/users/"+name+".jpg");
+        avatar = name;
+    }catch{
+
+    }
+    var t = "";
+    if(tmp.text.length > 200){
+        t = tmp.text.substring(0,200) + '...';
+    }else{
+        t = tmp.text;
+    }
+    return `<article class="post">
+    <header>
+        <div class="title">
+            <h2><a href="/single?id=${id}">${tmp.title.replaceAll('§g','💰').replace(/\xA7[0-9A-FK-OR]/ig, '')}</a></h2>
+            <p>${tmp.sub_title.replaceAll('§g','💰').replace(/\xA7[0-9A-FK-OR]/ig, '')}</p>
+        </div>
+        <div class="meta">
+            <time class="published" datetime="${tmp.datetime}">${tmp.datetime}</time>
+            <a href="#" class="author"><span class="name">${name}</span><img src="images/users/${avatar}.jpg" alt="" /></a>
+        </div>
+    </header>
+    <p>${t.replaceAll('§g','💰').replace(/\xA7[0-9A-FK-OR]/ig, '')}</p>
+    <footer>
+        <ul class="actions">
+            <li><a href="/single?id=${id}" class="button large">查看更多</a></li>
+        </ul>
+        <ul class="stats">
+            <li><a href="#" class="icon solid fa-comment">${tmp.reply.length}</a></li>
+        </ul>
+    </footer>
+</article>`
 }
 
-exports.delPage = function(id){
-    delete pagedata[id];
-    fs.writeFileSync('./page.json',JSON.stringify(pagedata,null,"\t"));
+function getPage(page){
+    var ii = Math.ceil(IDSwithTIME.length /3);
+    console.log(ii);
+    if(page > ii){
+        return ['null','null','null']
+    }
+    return [IDSwithTIME[page*3-3],IDSwithTIME[page*3-2],IDSwithTIME[page*3-1]];
 }
 
-exports.getReply = function(i){
-    /*
-    <h3>Text</h3><br><p>This is <b>bold</b> and this is <strong>strong</strong>. This is <i>italic</i> and this is <em>emphasized</em>.
-    */
+function getEssayCount(xuid){
+    var ii = 0;
+    for(var i in pagedata){
+        if(pagedata[i].xuid==xuid)
+        ii++
+    }
+    return ii;
+}
 
-   var t = '<hr>';
-   try{
-    pagedata[i].reply.forEach(e => {
-        t+=`<h5>${e.author}：${e.text}</h5>`//<p>${e.time}</p>`
-        //t+=`<p>${e.author}<i>      ${e.time}</i></p><p>${e.text}</p>`
+function getLatest(type){
+    for(var i in IDSwithTIME){
+        try{
+            if(pagedata[IDSwithTIME[i]].type==type){
+                return pagedata[IDSwithTIME[i]];
+            }
+        }catch{}
+    }
+    return pagedata['null'];
+}
+
+function getLastestTime(type){
+    var le = getLatest(type);
+    if(le ==undefined){
+        return '无'
+    }else{
+        if(le.reply.length > 0){
+            return le.reply[le.reply.length-1].datetime;
+        }else{
+            return le.datetime;
+        }
+    }
+}
+
+function addEssay(title,sub_title,text,type,xuid){
+    var tmpid = guid();
+    pagedata[tmpid] = {
+        datetime : sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss'),
+        title,
+        sub_title,
+        text,
+        xuid,
+        reply : [],
+        look : 1,
+        id:tmpid,
+        type
+    }
+    IDSwithTIME.reverse();
+    IDSwithTIME.push(tmpid);
+    IDSwithTIME.reverse();
+    save();
+    return tmpid;
+}
+
+function getEssay(id){
+    return (pagedata[id]==undefined)?pagedata["null"]:pagedata[id];
+}
+
+function addReply(id,xuid,text){
+    if(pagedata[id]==undefined)return false;
+    var ids = guid()
+    pagedata[id].reply.push({
+        xuid,
+        text,
+        id:ids,
+        datetime : sd.format(new Date(), 'YYYY-MM-DD HH:mm:ss')
     });
-   }catch{}
+    flushID(id);
+    return true;
+}
 
-   return t;
+function flushID(id){
+    remove(IDSwithTIME,id);
+    IDSwithTIME.reverse();
+    IDSwithTIME.push(id);
+    IDSwithTIME.reverse();
+    save();
+}
+
+function getAll(){
+    return Object.keys(pagedata);
+}
+
+function getAll_by_Type(type){
+    var li = [];
+    IDSwithTIME.forEach(element => {
+        if(getEssay(element).type == type)li.push(element);
+    });
+    return li;
+}
+
+function delEssay(id){
+    remove(IDSwithTIME,id);
+    delete pagedata[id];
+    save();
+}
+
+function delReply(ess_id,rep_id){
+    var rt = false;
+    getEssay(ess_id).reply.forEach(s=>{
+        if(s.id==rep_id){
+            remove(getEssay(ess_id).reply,s);
+            save();
+            rt = true;
+        }
+    })
+    return rt;
+}
+
+function getEssayByUser(xuid){
+    var rt = [];
+    for(var i in pagedata){
+        if(pagedata[i].xuid == xuid)
+        rt.push(i)
+    }
+    return rt;
+}
+
+module.exports = {
+    getEssay,
+    getEssayByUser,
+    generateHTML,
+    getPage,
+    addEssay,
+    addReply,
+    getLatest,
+    getLastestTime,
+    getAll,
+    getAll_by_Type,
+    guid,
+    delEssay,
+    delReply,
+    getEssayCount
 }
